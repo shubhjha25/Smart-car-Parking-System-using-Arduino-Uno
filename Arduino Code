@@ -1,0 +1,31 @@
+#include <Servo.h>
+
+const int irSensorPin = 2; // IR sensor pin
+const int servoPin = 9;    // Servo motor pin
+
+Servo gateServo;
+int sensorState = 0;       // Variable to store the sensor state
+
+void setup() {
+  pinMode(irSensorPin, INPUT);
+  gateServo.attach(servoPin);
+  gateServo.write(0);      // Initial position of the servo (closed gate)
+  Serial.begin(9600);
+}
+
+void loop() {
+  sensorState = digitalRead(irSensorPin);
+
+  if (sensorState == HIGH) {
+    Serial.println("Car detected! Opening gate...");
+    gateServo.write(90);  // Open gate (90 degrees)
+    delay(5000);          // Keep the gate open for 5 seconds
+    gateServo.write(0);   // Close gate (0 degrees)
+    Serial.println("Gate closing...");
+    delay(1000);          // Wait for a second before checking again
+  } else {
+    Serial.println("No car detected.");
+  }
+
+  delay(500);             // Short delay before the next sensor reading
+}
